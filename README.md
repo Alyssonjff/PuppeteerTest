@@ -13,6 +13,6 @@ or using pnpm
 
 pnpm i puppeteer
 
-and need to install express, use nom install express
+and need to install express, use npm install express
 
 to run use in terminal node fileName.js
