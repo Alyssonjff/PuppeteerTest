@@ -1,13 +1,9 @@
-const { links } = require('express/lib/response');
 const pup = require('puppeteer');
 
 const url = 'https://alligareimoveis.com.br/';
-const searchFor = "Casa";
-const tipoDeImovel = "Apartamento"; // Possiveis: Área,Apartamento,Casa,Casa comercial,Casa em Condomínio,
-const Cidade = "";
-const ValorMin = "5000000";  //Colocar todos os digitos (ate centavos)
-const ValorMax = "15000000"; //Colocar todos os digitos (ate centavos)
+const immobileTypes = ["Casa", "Apartamento"]; // Possible: Área,Apartamento,Casa,Casa comercial,Casa em Condomínio,
 let c = 1;
+const list = [];
 
 (async () =>{
     const browser = await pup.launch({headless: false});
@@ -18,45 +14,46 @@ let c = 1;
     console.log("Chegou na url");
     await page.waitForSelector('#search-minprice')
 
-    await page.click('#Tipo'); //Abre a seleção de opções
-    await page.click('select[id="Tipo"]' , 'Apartamento'); // colocar ${tipoDeImovel}
-   // await page.click('div[');
+    await page.click('#select2-property-status-container');
+    await page.click(`.select2-results__option ::-p-text("Aluguel")`);
 
-    await page.click('#location'); //Abre a selecao de cidades
-    await page.click('#location');
-
-    await page.click('#lista-bairros'); //Abre a selecao de Bairros
-    await page.click('#lista-bairros');
-
-    await page.click('#search-minprice');
-    await page.type('#search-minprice', ValorMin); //Seta o valor minimo
-
-    await page.click('#search-maxprice');
-    await page.type('#search-maxprice', ValorMax); //Seta o valor Maximo
+    for (const type of immobileTypes) {
+        await page.click('#Tipo'); //open select
+        await page.click(`.select2-results__option ::-p-text(${type})`);
+    }
 
     await Promise.all([
         page.waitForNavigation(),
-        await page.click('#form-busca-avancada > div > div:nth-child(7) > div > button')  //Enconntrar Forma de clicar no Pesquisar
-
-    ])
-
-    const links = await page.$$eval('.property-thumb-info-image > a' , el => el.map(link => link.href)) // obtem os links dos itens
-
-    for(const link of links){ // navega pelos links e absorve os dados
-        await page.goto(link);
-        await page.waitForSelector('.page-top-in');
+        await page.click('#form-busca-avancada > div > div:nth-child(7) > div > button')
         
-        const title = await page.$eval('.page-top-in' , element => element.innerText);
-        const adress = await page.$eval('div.col-sm-4 > div.row.form-group > div > ul', element => element.innerText);
-        const Description = await page.$eval('div.col-sm-8 > h2:nth-child(3)', element => element.innerText);
-        //const price = await page.$eval('.nome da classe' , element => element.innerText); / site n tem preco no html
+    ])
+    
+        const links = await page.$$eval('.property-thumb-info-image > a' , el => el.map(link => link.href)) // take itens links
+        for(const link of links){ // search on links
+            const buttonNext = '.pagination li:last-child';
 
-        const obj = {title,adress,Description,link};
-        console.log(obj);
+                console.log("Produto: ", c);
+                await page.goto(link);
+                await page.waitForSelector('.page-top-in');
 
-        c++;
-    }
+                const title = await page.$eval('.page-top-in' , element => element.innerText);
+                const address = await page.$eval('div.col-sm-4 > div.row.form-group > div > ul', element => element.innerText);
+                const description = await page.$eval('div.col-sm-8 > h2:nth-child(3)', element => element.innerText);
+                const price = await page.$eval('span > span.label.price' , element => element.innerText);
 
-    //await page.waitForTimeout(5000);  -- n funciona aparentemente
+                const obj = {
+                    title,
+                    address,
+                    description,
+                    price,
+                    link
+                };
+
+                list.push(obj);
+                
+                c++;
+            }
+            console.log(list);
+
     await browser.close();
-})();
+})()
