@@ -1,0 +1,66 @@
+const pup = require('puppeteer');
+
+const url = 'https://www.spheraimoveis.com.br';
+const immobileTypes = ["4", "5"]; // Possible: Apartamento(4),Casa(5)
+let c = 1;
+const list = [];
+
+(async () =>{
+    const browser = await pup.launch({headless: false});
+    const page = await browser.newPage();
+    console.log("Inicio");
+
+    await page.goto(url);
+    console.log("Chegou na url");
+    await page.waitForSelector('#label-locality');
+
+    await page.click('.kdls-select__container');
+    await page.click(`.kdls-select__option ::-p-text("Alugar")`);
+    await page.click('.digital-search__title-light');
+
+    for (const type of immobileTypes) {
+        await page.click('.digital-search__field:nth-child(2) .kdls-select__container'); //Open select
+        await page.click(`.kdls-select__menu.kdls-select__menu--open  > li:nth-child(${type})`);
+        await page.click('.digital-search__title-light');
+    }
+    
+    await Promise.all([
+        page.waitForNavigation(),
+        await page.click('#closeCookie'),
+        await page.click('.btn.btn-success.digital-search__cta') //Verificar
+    ])
+
+    let buttonNext = await page.$('.btn.btn-md.btn-primary.btn-next');
+
+    while(buttonNext){
+        buttonNext = await page.$('.btn.btn-md.btn-primary.btn-next');
+        
+        if(buttonNext){
+            await buttonNext?.click();
+            await page.waitForNavigation();
+        }else{
+            const links = await page.$$eval('.digital-result.digital-result__grid > a' , el => el.map(link => link.href));
+            for(const link of links){ //search on links
+    
+                console.log("Produto: ", c);
+                await page.goto(link);
+                await page.waitForSelector('.overflow-image-gallery');
+        
+                const title = await page.$eval('.first-line' , element => element.innerText);
+        
+                const obj = {
+                    title,
+                    link
+                };
+                
+                list.push(obj);
+        
+                c++;
+            }
+        }
+    }
+
+    console.log(list);
+
+    await browser.close();
+})();
