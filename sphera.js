@@ -24,11 +24,11 @@ const list = [];
         await page.click('.digital-search__title-light');
     }
     
-    await Promise.all([
-        page.waitForNavigation(),
-        await page.click('#closeCookie'),
-        await page.click('.btn.btn-success.digital-search__cta') //Verificar
-    ])
+    await page.click('#closeCookie');
+    const elementHandle = await page.$('#label-locality'); 
+    await elementHandle.type('');
+    await elementHandle.press('Enter');
+    await page.waitForNavigation();
 
     let buttonNext = await page.$('.btn.btn-md.btn-primary.btn-next');
 
