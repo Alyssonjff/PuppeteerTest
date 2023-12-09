@@ -1,13 +1,21 @@
 # PuppeteerTest
 
-Installation
+## Installation
 
-`yarn`
+`yarn` or `npm install`
 
-Execute all crawlers
+## Execute all crawlers
 
-`yarn start`
+`yarn start` or `npm start`
 
-Execute a crawler for a specific immobile
+### For Development
 
-`yarn start -i <FILE_NAME>`
+`yarn dev` or `npm run dev`
+
+## Execute a crawler for a specific immobile
+
+`yarn start -i <FILE_NAME>` or `npm start -- -i <FILE_NAME>`
+
+### For Development
+
+`yarn dev -i <FILE_NAME>` or `npm run dev -- -i <FILE_NAME>`
