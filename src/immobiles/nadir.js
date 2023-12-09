@@ -1,6 +1,6 @@
 import { startPuppetter } from '../puppeteer.js';
 
-const immobileTypes = ['apartamento', 'casa']; // Possible: Área,Apartamento(4),Casa(2)
+const immobileTypes = ['apartamento', 'apartamento-duplex', 'casa']; // Possible: Área,Apartamento(),Casa()
 let c = 1;
 const list = [];
 
