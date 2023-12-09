@@ -1,18 +1,13 @@
 # PuppeteerTest
 
- Installation
-To use Puppeteer in your project, run:
+Installation
 
-npm i puppeteer
+`yarn`
 
-or using yarn
+Execute all crawlers
 
-yarn add puppeteer
+`yarn start`
 
-or using pnpm
+Execute a crawler for a specific immobile
 
-pnpm i puppeteer
-
-and need to install express, use npm install express
-
-to run use in terminal node fileName.js
+`yarn start -i <FILE_NAME>`
