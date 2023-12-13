@@ -1,7 +1,6 @@
 import { startPuppetter } from '../puppeteer.js';
 
-const immobileTypes = ['apartamento', 'apartamento-duplex', 'casa']; // Possible: Área,Apartamento(),Casa()
-let c = 1;
+const immobileTypes = ['apartamento', 'apartamento-duplex', 'casa'];
 const list = [];
 
 export default async function Nadir() {
@@ -12,7 +11,7 @@ export default async function Nadir() {
     await page.goto(url);
     await page.waitForSelector('#label-locality');
 
-    let buttonNext = 2;
+    let buttonNext = 1;
     while (buttonNext) {
       buttonNext = await page.$('.btn.btn-md.btn-primary.btn-next');
       if (buttonNext) {
@@ -23,9 +22,6 @@ export default async function Nadir() {
           el.map((link) => link.href),
         );
         for (const link of links) {
-          //search on links
-
-          console.log('Produto: ', c);
           await page.goto(link);
           await page.waitForSelector('div.listing-details');
 
@@ -46,14 +42,11 @@ export default async function Nadir() {
 
           list.push(obj);
 
-          c++;
-
           await page.goBack();
         }
       }
     }
   }
-
   console.log(list);
 
   await page.close();

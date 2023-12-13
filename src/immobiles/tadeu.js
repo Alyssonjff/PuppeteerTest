@@ -1,34 +1,13 @@
 import { startPuppetter } from '../puppeteer.js';
 
-const url = 'https://www.tadeuimoveis.imb.br';
-const immobileTypes = [4, 5, 7]; // Possible: Apartamento(4),Casa(5)
-let c = 1;
+const immobileTypes = ["apartamento+casa"];
 const list = [];
 
 export default async function tadeu() {
+  const url = `https://www.tadeuimoveis.imb.br/imoveis/para-alugar/${immobileTypes}?finalidade=residencial`;
   const page = await startPuppetter(url);
-  console.log('Chegou na url');
-  await page.waitForSelector('#label-locality');
 
-  await page.click('.kdls-select__container');
-  await page.click(`.kdls-select__option ::-p-text("Alugar")`);
-  await page.click('.search-home');
-
-  for (const type of immobileTypes) {
-    await page.click(
-      '.digital-search__field:nth-child(2) .kdls-select__container',
-    ); //Open select
-    await page.click(
-      `.kdls-select__menu.kdls-select__menu--open  > li:nth-child(${type})`,
-    );
-    await page.click('.header-container');
-  }
-
-  await Promise.all([
-    page.waitForNavigation(),
-    await page.click('section > form > button'),
-  ]);
-  let buttonNext = await page.$('.digital-pagination ::-p-text("Ver mais")');
+  let buttonNext = 1;
 
   while (buttonNext) {
     buttonNext = await page.$('.digital-pagination ::-p-text("Ver mais")');
@@ -41,9 +20,6 @@ export default async function tadeu() {
         (el) => el.map((link) => link.href),
       );
       for (const link of links) {
-        //search on links
-
-        console.log('Produto: ', c);
         await page.goto(link);
         await page.waitForSelector('.overflow-image-gallery');
 
@@ -58,8 +34,6 @@ export default async function tadeu() {
         };
 
         list.push(obj);
-
-        c++;
       }
     }
   }
