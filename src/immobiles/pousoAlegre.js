@@ -1,79 +1,46 @@
 import { startPuppetter } from '../puppeteer.js';
 
-const url = 'https://pousoalegreimoveis.com.br';
-const immobileTypes = ['Casa', 'Apartamento']; // Possible: Área,Apartamento,Casa
-let c = 1;
+const immobileTypes = ['casa', 'apartamento'];
 const list = [];
 
 export default async function pousoAlegre() {
-  const page = await startPuppetter(url);
-  console.log('Chegou na url');
-  await page.waitForSelector('.sc-ic8bv9-1');
-
-  await page.click('.css-1ia7692-container');
-  await page.click(`.select2-results__option ::-p-text("Aluguel")`);
-
   for (const type of immobileTypes) {
-    await page.click('#Tipo'); //Open select
-    await page.click(`.select2-results__option ::-p-text(${type})`);
-  }
-
-  await Promise.all([
-    page.waitForNavigation(),
-    page.click('#form-busca-avancada > div > div:nth-child(7) > div > button'),
-  ]);
-
-  let buttonNext = await page.$('.pagination li ::-p-text("PRÓXIMO")');
-  while (buttonNext) {
-    const links = await page.$$eval('.property-thumb-info-image > a', (el) =>
+    const url = `https://pousoalegreimoveis.com.br/alugar/${type}`;
+    const page = await startPuppetter(url);
+    console.log('Chegou na url');
+    await page.waitForSelector('.sc-lrgvkf-1');
+      
+    let buttonNext = 1;
+    while (buttonNext) {
+      const links = await page.$$eval('.src__Box-sc-1sbtrzs-0.src__Flex-sc-1sbtrzs-1.sc-1rvsmwh-0 div a', (el) =>
       el.map((link) => link.href),
-    );
-    for (const link of links) {
-      //search on links
-
-      console.log('Produto: ', c);
-      await page.goto(link);
-      await page.waitForSelector('.page-top-in');
-
-      const title = await page.$eval(
-        '.page-top-in',
-        (element) => element.innerText,
       );
-      const address = await page.$eval(
-        'div.col-sm-4 > div.row.form-group > div > ul',
-        (element) => element.innerText,
-      );
-      const description = await page.$eval(
-        'div.col-sm-8 > h2:nth-child(3)',
-        (element) => element.innerText,
-      );
-      const price = await page.$eval(
-        'span > span.label.price',
-        (element) => element.innerText,
-      );
-
-      const obj = {
-        title,
-        address,
-        description,
-        price,
-        link,
-      };
-
-      list.push(obj);
-
-      c++;
-
-      await page.goBack();
+      for (const link of links) {
+        await page.goto(link);
+        await page.waitForSelector('.sc-bn22ww-0');
+        
+        const title = await page.$eval('.sc-1he91nm-2',(element) => element.innerText,);
+        const address = await page.$eval('.sc-1he91nm-3',(element) => element.innerText,);
+        const price = await page.$eval('span.sc-1san5b5-3',(element) => element.innerText,);
+                  
+        const obj = {
+          title,
+          address,
+          price,
+          link,
+        };
+                  
+        list.push(obj);          
+                  
+        await page.goBack();
+      }
+      buttonNext = await page.$('.pagination li ::-p-text("PRÓXIMO")');
+      if (buttonNext) {
+        await buttonNext?.click();
+        await page.waitForNavigation();
+      }
     }
-    buttonNext = await page.$('.pagination li ::-p-text("PRÓXIMO")');
-    if (buttonNext) {
-      await buttonNext?.click();
-      await page.waitForNavigation();
-    }
-  }
-
-  console.log(list);
-
+  }           
+  console.log(list);          
   await page.close();
-}
+}      
