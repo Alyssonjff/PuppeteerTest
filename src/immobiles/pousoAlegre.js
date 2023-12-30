@@ -1,14 +1,15 @@
+import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['casa', 'apartamento'];
-const list = [];
+const properties = [];
+const SITE_ID = 7;
 
 export default async function pousoAlegre() {
   for (const type of immobileTypes) {
     const url = `https://pousoalegreimoveis.com.br/alugar/${type}`;
     const page = await startPuppetter(url);
-    console.log('Chegou na url');
-    await page.waitForSelector('.sc-lrgvkf-1');
+      await page.waitForSelector('.sc-lrgvkf-1');
       
     let buttonNext = 1;
     while (buttonNext) {
@@ -28,9 +29,10 @@ export default async function pousoAlegre() {
           address,
           price,
           link,
+          SITE_ID,
         };
                   
-        list.push(obj);          
+        properties.push(obj);          
                   
         await page.goBack();
       }
@@ -40,7 +42,8 @@ export default async function pousoAlegre() {
         await page.waitForNavigation();
       }
     }
-  }           
-  console.log(list);          
+  }     
+  insertProperties(properties);      
+  console.log(properties);          
   await page.close();
 }      

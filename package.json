@@ -25,6 +25,7 @@
     "puppeteer": "^21.6.0"
   },
   "dependencies": {
+    "better-sqlite3": "^9.2.2",
     "commander": "^11.1.0"
   }
 }

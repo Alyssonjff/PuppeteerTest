@@ -1,7 +1,9 @@
+import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['apartamento+casa'];
-const list = [];
+const properties = [];
+const SITE_ID = 8;
 
 export default async function sphera() {
   const url = `https://www.spheraimoveis.com.br/imoveis/para-alugar/${immobileTypes}?finalidade=residencial`;
@@ -32,13 +34,14 @@ export default async function sphera() {
         const obj = {
           title,
           link,
+          SITE_ID,
         };
 
-        list.push(obj);
+        properties.push(obj);
       }
     }
   }
-  console.log(list);
+  insertProperties(properties);
 
   await page.close();
 }

@@ -1,13 +1,13 @@
+import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const url = 'https://www.imobiliariapantanal.com.br';
 const immobileTypes = [4, 5]; // Possible: Apartamento(4),Casa(5)
-let c = 1;
-const list = [];
+const properties = [];
+const SITE_ID = 5;
 
 export default async function pantanal() {
   const page = await startPuppetter(url);
-  console.log('Chegou na url');
   await page.waitForSelector('#label-locality');
 
   await page.click('.kdls-select__container');
@@ -43,7 +43,6 @@ export default async function pantanal() {
       for (const link of links) {
         //search on links
 
-        console.log('Produto: ', c);
         await page.goto(link);
         await page.waitForSelector('.overflow-image-gallery');
 
@@ -55,16 +54,14 @@ export default async function pantanal() {
         const obj = {
           title,
           link,
+          SITE_ID,
         };
 
-        list.push(obj);
-
-        c++;
+        properties.push(obj);
       }
     }
   }
-
-  console.log(list);
+  insertProperties(properties);
 
   await page.close();
 }

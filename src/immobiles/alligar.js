@@ -1,14 +1,13 @@
+import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const url = 'https://alligareimoveis.com.br';
 const immobileTypes = ['Casa', 'Apartamento']; // Possible: Área,Apartamento,Casa
-let c = 1;
-const list = [];
+const properties = [];
+const SITE_ID = 1;
 
 export default async function alligar() {
   const page = await startPuppetter(url);
-
-  console.log('Chegou na url');
 
   await page.waitForSelector('#search-minprice');
 
@@ -33,7 +32,6 @@ export default async function alligar() {
     for (const link of links) {
       //search on links
 
-      console.log('Produto: ', c);
       await page.goto(link);
       await page.waitForSelector('.page-top-in');
 
@@ -56,15 +54,14 @@ export default async function alligar() {
 
       const obj = {
         title,
-        address,
+        batata:address,
         description,
         price,
         link,
+        SITE_ID,
       };
 
-      list.push(obj);
-
-      c++;
+      properties.push(obj);
 
       await page.goBack();
     }
@@ -74,8 +71,7 @@ export default async function alligar() {
       await page.waitForNavigation();
     }
   }
-
-  console.log(list);
+  insertProperties(properties);
 
   await page.close();
 }

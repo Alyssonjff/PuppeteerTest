@@ -2,7 +2,12 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 
+import { initializeDB } from './dbScript.js';
+
+
 import { closePuppetter } from './puppeteer.js';
+
+initializeDB();
 
 const program = new Command();
 program
@@ -28,8 +33,13 @@ const immobilesPromisses = fs
   .map(async (file) => {
     const { default: module } = await import('./immobiles/' + file);
     if (typeof module === 'function') {
-      await module();
+      try {
+        await module();
+      } catch (error) {
+        console.log(`Error on file ${file}`)
+        console.log(error);
+      }
     }
   });
 
-await Promise.all(immobilesPromisses).finally(closePuppetter);
+await Promise.allSettled(immobilesPromisses).finally(closePuppetter);
