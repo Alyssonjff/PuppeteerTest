@@ -1,35 +1,35 @@
 import fs from 'fs';
 import Database from 'better-sqlite3';
 
-let db;
-export function initializeDB(){   
-    db = new Database('database.db');
-    db.pragma('journal_mode = WAL');
 
-    const createTable = fs.readFileSync('./src/create-db.sql', 'utf8');
-    db.exec(createTable);
+const db = new Database('database.db');
+db.pragma('journal_mode = WAL');
+const createTable = fs.readFileSync('./src/create-db.sql', 'utf8');
+db.exec(createTable);
+
+const alligar = db.prepare("SELECT * FROM site WHERE name = 'Alligar'").get();
+if (!alligar) {
+    const insert = db.prepare('INSERT INTO site (name) VALUES (@name)');
+    const insertMany = db.transaction((sites) => {
+        for (const site of sites) {
+            insert.run(site)
+        }
+    });
     
-    const alligar = db.prepare("SELECT * FROM site WHERE name = 'Alligar'").get();
-    if (!alligar) {
-        const insert = db.prepare('INSERT INTO site (name) VALUES (@name)');
-        const insertMany = db.transaction((sites) => {
-            for (const site of sites) {
-                insert.run(site)
-            }
-        });
-        
-        insertMany([
-            { name: 'Alligar'},
-            { name: 'Aristeu'},
-            { name: 'Motta'},
-            { name: 'Nadir'},
-            { name: 'Pantanal'},
-            { name: 'PedraForte'},
-            { name: 'PousoAlegre'},
-            { name: 'Sphera'},
-            { name: 'Tadeu'},
-        ]);
-    }
+    insertMany([
+        { name: 'Alligar'},
+        { name: 'Aristeu'},
+        { name: 'Motta'},
+        { name: 'Nadir'},
+        { name: 'Pantanal'},
+        { name: 'PedraForte'},
+        { name: 'PousoAlegre'},
+        { name: 'Sphera'},
+        { name: 'Tadeu'},
+    ]);
+}
+export function initializeDB(){   
+
 }
 
 const nullColumns = ['batata','description','price'];

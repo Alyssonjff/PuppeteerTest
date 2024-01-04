@@ -31,10 +31,15 @@ export default async function pedraForte() {
           'span.first-line',
           (element) => element.innerText,
         );
+        const price = await page.$eval(
+          '.knl_panels-list:first-child span:nth-child(2)',
+          (element) => element.innerText,
+        );
 
         const obj = {
           title,
           link,
+          price,
           SITE_ID,
         };
 

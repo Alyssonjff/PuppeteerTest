@@ -30,10 +30,15 @@ export default async function sphera() {
           '.first-line',
           (element) => element.innerText,
         );
+        const price = await page.$eval(
+          '.knl_panels-list p',
+          (element) => element.innerText,
+        );
 
         const obj = {
           title,
           link,
+          price,
           SITE_ID,
         };
 

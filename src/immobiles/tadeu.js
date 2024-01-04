@@ -29,10 +29,15 @@ export default async function tadeu() {
           '.box-description',
           (element) => element.innerText,
         );
+        const price = await page.$eval(
+          '.knl_panels-list p',
+          (element) => element.innerText,
+        );
 
         const obj = {
           title,
           link,
+          price,
           SITE_ID,
         };
 
