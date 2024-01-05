@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const url = 'https://alligareimoveis.com.br';
@@ -71,7 +70,7 @@ export default async function alligar() {
       await page.waitForNavigation();
     }
   }
-  insertProperties(properties);
-
   await page.close();
+
+  return properties;
 }

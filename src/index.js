@@ -2,9 +2,7 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 
-import { initializeDB } from './dbScript.js';
-
-
+import { initializeDB, insertProperties } from './dbScript.js';
 import { closePuppetter } from './puppeteer.js';
 
 initializeDB();
@@ -34,9 +32,10 @@ const immobilesPromisses = fs
     const { default: module } = await import('./immobiles/' + file);
     if (typeof module === 'function') {
       try {
-        await module();
+        const properties = await module();
+        await insertProperties(properties);
       } catch (error) {
-        console.log(`Error on file ${file}`)
+        console.log(`Error on file ${file}`);
         console.log(error);
       }
     }

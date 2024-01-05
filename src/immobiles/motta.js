@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['casa--apartamento']; // Possible: Área,Apartamento(2),Casa
@@ -53,7 +52,8 @@ export default async function motta() {
       await page.waitForNavigation();
     }
   }
-  insertProperties(properties);
 
   await page.close();
+
+  return properties;
 }

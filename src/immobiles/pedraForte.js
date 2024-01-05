@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['casa+apartamento']; // Possible: Apartamento(2) ,Casa(3)
@@ -49,7 +48,6 @@ export default async function pedraForte() {
     }
   }
 
-  insertProperties(properties);
-
   await page.close();
+  return properties;
 }

@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['apartamento', 'apartamento-duplex', 'casa'];
@@ -50,7 +49,7 @@ export default async function Nadir() {
       }
     }
   }
-  insertProperties(properties);
-
   await page.close();
+
+  return properties;
 }

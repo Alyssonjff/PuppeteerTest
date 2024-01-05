@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['apartamento+casa'];
@@ -46,7 +45,7 @@ export default async function sphera() {
       }
     }
   }
-  insertProperties(properties);
-
   await page.close();
+
+  return properties;
 }

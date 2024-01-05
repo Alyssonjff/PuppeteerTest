@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const immobileTypes = ['casa+apartamento'];
@@ -40,7 +39,7 @@ export default async function aristeu() {
       }
     }
   }
-  insertProperties(properties);
-
   await page.close();
+
+  return properties;
 }
