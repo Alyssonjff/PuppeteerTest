@@ -53,7 +53,7 @@ export default async function alligar() {
 
       const obj = {
         title,
-        batata:address,
+        batata: address,
         description,
         price,
         link,

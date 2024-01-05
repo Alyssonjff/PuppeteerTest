@@ -1,4 +1,3 @@
-import { insertProperties } from '../dbScript.js';
 import { startPuppetter } from '../puppeteer.js';
 
 const url = 'https://www.imobiliariapantanal.com.br';
@@ -66,7 +65,7 @@ export default async function pantanal() {
       }
     }
   }
-  insertProperties(properties);
-
   await page.close();
+
+  return properties;
 }

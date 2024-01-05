@@ -22,7 +22,7 @@ export default async function tadeu() {
       );
       for (const link of links) {
         await page.goto(link);
-        await page.waitForSelector('.overflow-image-gallery');
+        await page.waitForSelector('.box-description');
 
         const title = await page.$eval(
           '.box-description',

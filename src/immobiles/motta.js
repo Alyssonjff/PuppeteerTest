@@ -5,21 +5,15 @@ const properties = [];
 const SITE_ID = 3;
 
 export default async function motta() {
-  const url =`https://www.imobiliariamotta.com.br/aluguel/${immobileTypes}/todas-as-cidades/todos-os-bairros/0-quartos/0-suite-ou-mais/0-vaga/0-banheiro-ou-mais/todos-os-condominios?valorminimo=0&valormaximo=0&pagina=1`;
+  const url = `https://www.imobiliariamotta.com.br/aluguel/${immobileTypes}/todas-as-cidades/todos-os-bairros/0-quartos/0-suite-ou-mais/0-vaga/0-banheiro-ou-mais/todos-os-condominios?valorminimo=0&valormaximo=0&pagina=1`;
   const page = await startPuppetter(url);
-  
   await page.waitForSelector('.sidebar-widget.responsiv.bg-busca');
-  
-  let buttonNext = 1;
-  while (buttonNext) {
-    console.log('Entrou no while')
-    buttonNext = await page.$('.pagination li ::-p-text("»")');
-    const links = await page.$$eval('.property a',
-     (el) =>  el.map((link) => link.href),
-    );
+  do {
+    const links = await page.$$eval('.property a', (el) => el.map((link) => link.href));
     for (const link of links) {
-      await page.waitForSelector('#app-filter')
-      await page.goto(link, {delay: 1000});
+      await page.waitForSelector('#app-filter');
+      await page.goto(link);
+      await page.waitForNavigation();
       await page.waitForSelector('.pull-left');
 
       const title = await page.$eval(
@@ -47,11 +41,13 @@ export default async function motta() {
 
       await page.goBack();
     }
+
+    buttonNext = await page.$('.pagination li ::-p-text("»")');
     if (buttonNext) {
       await buttonNext?.click();
       await page.waitForNavigation();
     }
-  }
+  } while (buttonNext);
 
   await page.close();
 
