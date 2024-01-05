@@ -2,10 +2,8 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 
-import { initializeDB, insertProperties } from './dbScript.js';
+import { insertProperties } from './dbScript.js';
 import { closePuppetter } from './puppeteer.js';
-
-initializeDB();
 
 const program = new Command();
 program

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import Database from 'better-sqlite3';
 
-
 const db = new Database('database.db');
 db.pragma('journal_mode = WAL');
 const createTable = fs.readFileSync('./src/create-db.sql', 'utf8');
@@ -15,7 +14,6 @@ if (!alligar) {
             insert.run(site)
         }
     });
-    
     insertMany([
         { name: 'Alligar'},
         { name: 'Aristeu'},
@@ -27,9 +25,6 @@ if (!alligar) {
         { name: 'Sphera'},
         { name: 'Tadeu'},
     ]);
-}
-export function initializeDB(){   
-
 }
 
 const nullColumns = ['batata','description','price'];
