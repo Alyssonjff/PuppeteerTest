@@ -19,18 +19,9 @@ export default async function motta() {
       await page.goto(link);
       await page.waitForSelector('.pull-left');
 
-      const title = await page.$eval(
-        '.pull-left',
-        (element) => element.innerText,
-      );
-      const description = await page.$eval(
-        '.properties-description.mb-40',
-        (element) => element.innerText,
-      );
-      const price = await page.$eval(
-        'div.pull-right > h3 > span',
-        (element) => element.innerText,
-      );
+      const title = await page.$eval('.pull-left', (element) => element.innerText);
+      const description = await page.$eval('.properties-description.mb-40', (element) => element.innerText);
+      const price = await page.$eval('div.pull-right > h3 > span', (element) => element.innerText);
 
       const obj = {
         title,
