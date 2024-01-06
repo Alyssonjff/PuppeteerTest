@@ -14,7 +14,7 @@ export default async function motta() {
 
   let buttonNext;
   do {
-    const links = await page.$$eval('.property a', (el) => el.map((link) => link.href));
+    const links = await page.$$eval('.property > a', (el) => el.map((link) => link.href));
     for (const link of links) {
       await page.waitForSelector('#app-filter');
       await page.goto(link);
