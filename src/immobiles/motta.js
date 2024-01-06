@@ -17,7 +17,6 @@ export default async function motta() {
     for (const link of links) {
       await page.waitForSelector('#app-filter');
       await page.goto(link);
-      await page.waitForNavigation();
       await page.waitForSelector('.pull-left');
 
       const title = await page.$eval(
