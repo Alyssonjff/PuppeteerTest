@@ -12,7 +12,10 @@ export default async function motta() {
   });
 
   let buttonNext;
+    let previousLink = await page.url();
+    let currentLink = await page.url();
   do {
+        previousLink = await page.url();
     const links = await page.$$eval('.property > a', (el) => el.map((link) => link.href));
     for (const link of links) {
       await page.waitForSelector('#app-filter');
@@ -36,12 +39,14 @@ export default async function motta() {
       await page.goBack();
     }
 
-    buttonNext = await page.$('.pagination li ::-p-text("»")');
+        buttonNext = await page.$('#paginacao > ul:last-child > li:last-child a');
     if (buttonNext) {
       await buttonNext?.click();
-      await page.waitForNavigation();
+        }
+        currentLink = await page.url();
+      } while (previousLink !== currentLink); 
     }
-  } while (buttonNext);
+
 
   await page.close();
 
