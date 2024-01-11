@@ -2,10 +2,12 @@ import { startPuppetter } from '../puppeteer.js';
 
 const properties = [];
 const SITE_ID = 3;
-
+let room = ['3','4'];
 export default async function motta() {
-  const url = `https://www.imobiliariamotta.com.br/aluguel/casa--apartamento/todas-as-cidades/todos-os-bairros/0-quartos/0-suite-ou-mais/0-vaga/0-banheiro-ou-mais/todos-os-condominios?valorminimo=0&valormaximo=0&pagina=1`;
-  const page = await startPuppetter(url);
+  const page = await startPuppetter();
+  for (let rooms of room){
+    const url = `https://www.imobiliariamotta.com.br/aluguel/casa--apartamento/todas-as-cidades/todos-os-bairros/${rooms}-quartos/0-suite-ou-mais/0-vaga/0-banheiro-ou-mais/todos-os-condominios?valorminimo=0&valormaximo=0&pagina=1`;
+    await page.goto(url);
   await page.waitForSelector('.property a');
   page.on('dialog', async (dialog) => {
     await dialog.accept();
